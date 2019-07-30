@@ -117,11 +117,21 @@ class ViewMoreText extends React.Component {
     if (this.state.isFulltextShown) {
       return (
         <View onLayout={this.onLayoutFullText} style={styles.fullTextWrapper}>
-          <Text onLongPress={this.props.onLongPress} style={this.props.textStyle}>{this.props.children}</Text>
+          <Text onLongPress={this._longPressShouldBeActive()} style={this.props.textStyle}>{this.props.children}</Text>
         </View>
       );
     }
     return null;
+  }
+
+  _onLongPress = () => {
+    if (this.props.onLongPress) {
+      this.props.onLongPress(this.props.children)
+    }
+  }
+
+  _longPressShouldBeActive = () => {
+    return this.props.longPressActive ? this._onLongPress : null
   }
 
   render() {
@@ -131,7 +141,7 @@ class ViewMoreText extends React.Component {
           <Text
             style={this.props.textStyle}
             numberOfLines={this.state.numberOfLines}
-            onLongPress={this.props.onLongPress}
+            onLongPress={this._longPressShouldBeActive()}
           >
             {this.props.children}
           </Text>
@@ -147,6 +157,7 @@ class ViewMoreText extends React.Component {
 ViewMoreText.propTypes = {
   afterCollapse: PropTypes.func,
   afterExpand: PropTypes.func,
+  longPressActive: PropTypes.bool,
   numberOfLines: PropTypes.number.isRequired,
   onLongPress: PropTypes.func,
   renderViewLess: PropTypes.func,
@@ -157,6 +168,7 @@ ViewMoreText.propTypes = {
 ViewMoreText.defaultProps = {
   afterCollapse: () => {},
   afterExpand: () => {},
+  longPressActive: false,
   onLongPress: () => null,
   textStyle: {},
 };
